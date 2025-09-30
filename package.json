@@ -7,9 +7,14 @@
     "pixelkat5"
   ],
   "type": "module",
-  "scripts": {
-    "build": "node build/build.js",
-    "patch": "node build/patch.js && npm run build"
+  // Date: 2025-09-30 (Europe/London)
+  // package.json — scripts block with auto-bump before build
+  {
+    "scripts": {
+      "prebuild": "npm version prerelease --preid=exp --no-git-tag-version",
+      "build": "node build/build.js",
+      "patch": "node build/patch.js && npm run build"
+    }
   },
   "devDependencies": {
     "esbuild": "^0.25.0",

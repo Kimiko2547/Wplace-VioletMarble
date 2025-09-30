@@ -602,3 +602,50 @@ export function saveDragModeEnabled(enabled) {
     console.error('Failed to save drag mode setting:', error);
   }
 }
+/** Gets the main Template Color Filter sort */
+export function getTemplateColorSort() {
+    try {
+        // Prefer Tampermonkey
+        if (typeof GM_getValue !== 'undefined') {
+            const v = GM_getValue('bmTemplateColorSort', null);
+            if (v !== null) return JSON.parse(v);
+        }
+        // Fallback + migration from any old key (if you used localStorage before)
+        const ls = localStorage.getItem('bmTemplateColorSort');
+        if (ls !== null) return JSON.parse(ls);
+    } catch { }
+    return 'default';
+}
+
+/** Saves the main Template Color Filter sort */
+export function saveTemplateColorSort(sortValue) {
+    try {
+        const s = JSON.stringify(sortValue);
+        if (typeof GM_setValue !== 'undefined') GM_setValue('bmTemplateColorSort', s);
+        localStorage.setItem('bmTemplateColorSort', s); // backup
+    } catch { }
+}
+
+/** Gets the Compact List sort (migrates old localStorage key) */
+export function getCompactSort() {
+    try {
+        // Prefer Tampermonkey
+        if (typeof GM_getValue !== 'undefined') {
+            const v = GM_getValue('bmcf-compact-sort', null);
+            if (v !== null) return JSON.parse(v);
+        }
+        // Fallback to old localStorage key
+        const ls = localStorage.getItem('bmcf-compact-sort');
+        if (ls !== null) return ls; // old value was a plain string
+    } catch { }
+    return 'default';
+}
+
+/** Saves the Compact List sort */
+export function saveCompactSort(sortValue) {
+    try {
+        if (typeof GM_setValue !== 'undefined') GM_setValue('bmcf-compact-sort', JSON.stringify(sortValue));
+        localStorage.setItem('bmcf-compact-sort', sortValue); // keep old key as backup
+    } catch { }
+}
+

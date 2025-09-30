@@ -17,6 +17,12 @@ import * as icons from './icons.js';
 import { initializeTileRefreshPause, toggleTileRefreshPause, isTileRefreshPaused, getCachedTileCount, getSmartCacheStats, toggleSmartTileCache, notifyCanvasChange } from './tileManager.js';
 import * as Settings from './settingsManager.js';
 import { getDragModeEnabled, saveDragModeEnabled } from './settingsManager.js';
+import {
+    getTemplateColorSort,
+    saveTemplateColorSort,
+    getCompactSort,
+    saveCompactSort
+} from './settingsManager.js';
 
 const name = GM_info.script.name.toString(); // Name of userscript
 const version = GM_info.script.version.toString(); // Version of userscript
@@ -6011,10 +6017,23 @@ function buildColorFilterOverlay() {
       });
     };
 
-    // Add event listener for filter select
-    filterSelect.addEventListener('change', () => {
-      applyFilter(filterSelect.value);
-    });
+      /* Date: 2025-09-30 — Persist main Template Color Filter sort via settingsManager */
+      (function restoreMainSortOnce() {
+          try {
+              const saved = getTemplateColorSort();       // 'default' if nothing saved
+              if (filterSelect && [...filterSelect.options].some(o => o.value === saved)) {
+                  filterSelect.value = saved;
+              }
+              applyFilter(filterSelect ? filterSelect.value : 'default');
+          } catch {
+              applyFilter('default');
+          }
+      })();
+
+      filterSelect.addEventListener('change', () => {
+          try { saveTemplateColorSort(filterSelect.value); } catch { }
+          applyFilter(filterSelect.value);
+      });
 
     // Enable/Disable all functionality
     enableAllButton.onclick = async () => {
@@ -6942,15 +6961,18 @@ function buildColorFilterOverlay() {
     };
     
     // Add sort event listener
-    compactSortSelect.addEventListener('change', () => {
-      applyCompactSort(compactSortSelect.value);
-      // Save sort preference
-      localStorage.setItem('bmcf-compact-sort', compactSortSelect.value);
-    });
-    
+        compactSortSelect.addEventListener('change', () => {
+            saveCompactSort(compactSortSelect.value);
+            applyCompactSort(compactSortSelect.value);
+        });
+
     // Load saved sort preference
-    const savedSort = localStorage.getItem('bmcf-compact-sort') || 'default';
-    compactSortSelect.value = savedSort;
+        const savedSort = getCompactSort(); // migrates from localStorage if needed
+        if ([...compactSortSelect.options].some(o => o.value === savedSort)) {
+            compactSortSelect.value = savedSort;
+        } else {
+            compactSortSelect.value = 'default';
+        }
 
     // Store reference to all original items for sorting
     let allCompactItems = [];
