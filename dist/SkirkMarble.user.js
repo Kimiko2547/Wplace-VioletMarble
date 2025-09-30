@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Skirk Marble (Experimental Fork)
 // @namespace    https://github.com/Kimiko2547/
-// @version      0.90.5-exp.0
+// @version      0.90.4-exp.2
 // @description  A userscript to automate and/or enhance the user experience on Wplace.live. (Experimental fork by Kimiko2547)
 // @author       Seris0 (fork maintained by Kimiko2547)
 // @license      MPL-2.0
