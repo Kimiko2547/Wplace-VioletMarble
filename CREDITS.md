@@ -4,7 +4,8 @@ This project builds upon the excellent work of several contributors from the wpl
 
 ## Main Contributors
 
-- **Seris0** - Fork maintainer and primary developer
+- **Kimiko2547** - Additional development and maintenance
+- **Seris0** - Parent fork maintainer and primary developer
 - **SwingTheVine** - Original Blue Marble creator
 
 ## Code Contributors

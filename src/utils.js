@@ -160,6 +160,19 @@ export function base64ToUint8(base64) {
   return array;
 }
 
+/**
+ * Returns the 4 coordinate inputs in order: tx, ty, px, py.
+ * Minimal on purpose; reused by paste handler.
+ */
+export function selectAllCoordinateInputs(document) {
+    const coords = [];
+    coords.push(document.querySelector('#bm-input-tx'));
+    coords.push(document.querySelector('#bm-input-ty'));
+    coords.push(document.querySelector('#bm-input-px'));
+    coords.push(document.querySelector('#bm-input-py'));
+    return coords;
+}
+
 /** Converts a 4 element array of coordinates into map longitude and latitude
  * @param {number[]} coordinates A 4 element array of coordinates (Tile X, Tile Y, Pixel X, Pixel Y)
  * @returns {{lng: number, lat: number} | undefined} A lngLat object or undefined if an error occurred e.g. malformed coordinates data
@@ -518,3 +531,13 @@ export const colorpalette = [
     "free": false
   }
 ];
+export function consoleLog(...args) {
+    // why: keep a stable hook if you later want to route logs somewhere else
+    // eslint-disable-next-line no-console
+    console.log(...args);
+}
+
+export function consoleWarn(...args) {
+    // eslint-disable-next-line no-console
+    console.warn(...args);
+}

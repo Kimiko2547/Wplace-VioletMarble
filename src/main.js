@@ -6,7 +6,7 @@ import Overlay from './Overlay.js';
 import Observers from './observers.js';
 import ApiManager from './apiManager.js';
 import TemplateManager from './templateManager.js';
-import { debugLog, canvasPosToLatLng, getDebugLoggingEnabled, saveDebugLoggingEnabled } from './utils.js';
+import { debugLog, canvasPosToLatLng, getDebugLoggingEnabled, saveDebugLoggingEnabled, consoleLog, consoleWarn, selectAllCoordinateInputs } from './utils.js';
 
 // Ensure debugLog is globally available to prevent ReferenceError - set it immediately
 if (typeof window !== 'undefined') {
@@ -4196,7 +4196,23 @@ function buildOverlayMain() {
         .buildElement()
         .addDiv({ id: 'bm-contain-inputs'})
           .addP({ textContent: 'Tile: '}).buildElement()
-          .addInput({'type': 'number', 'id': 'bm-input-tx', 'placeholder': 'T1 X', 'min': 0, 'max': 2047, 'step': 1, 'required': true}).buildElement()
+          .addInput(
+              { 'type': 'number', 'id': 'bm-input-tx', 'placeholder': 'Tl X', 'min': 0, 'max': 2047, 'step': 1, 'required': true },
+              (_instance, input) => {
+                  input.addEventListener('paste', (event) => {
+                      const raw = (event.clipboardData || window.clipboardData)?.getData('text') ?? '';
+                      const nums = (raw.match(/-?\d+/g) || []).slice(0, 4).map(Number);
+                      if (nums.length !== 4) return;
+                      const [tx, ty, px, py] = selectAllCoordinateInputs(document);
+                      if (tx) tx.value = String(nums[0]);
+                      if (ty) ty.value = String(nums[1]);
+                      if (px) px.value = String(nums[2]);
+                      if (py) py.value = String(nums[3]);
+                      event.preventDefault(); // block raw paste into tx
+                    });
+               }
+          ).buildElement()
+
           .addInput({'type': 'number', 'id': 'bm-input-ty', 'placeholder': 'T1 Y', 'min': 0, 'max': 2047, 'step': 1, 'required': true}).buildElement()
           .addInput({'type': 'number', 'id': 'bm-input-px', 'placeholder': 'Px X', 'min': 0, 'max': 2047, 'step': 1, 'required': true}).buildElement()
           .addInput({'type': 'number', 'id': 'bm-input-py', 'placeholder': 'Px Y', 'min': 0, 'max': 2047, 'step': 1, 'required': true}).buildElement()
@@ -4505,7 +4521,7 @@ function buildOverlayMain() {
           }).buildElement()
         .buildElement()
         .addDiv({'style': 'position: absolute; left: 0; bottom: 2px; text-align: left; padding: 0; pointer-events: auto; user-select: text; line-height: 12px;'}).
-        addSmall({'textContent': `Made by SwingTheVine | Fork Seris0 | v${version}`, 'style': 'color: #94a3b8; font-size: 0.74em; opacity: 0.85;'}).buildElement()        .buildElement()
+        addSmall({'textContent': `Made by SwingTheVine | Fork Kimiko2547 | v${version}`, 'style': 'color: #94a3b8; font-size: 0.74em; opacity: 0.85;'}).buildElement()        .buildElement()
       .buildElement()
     .buildElement()
   .buildOverlay(document.body);
